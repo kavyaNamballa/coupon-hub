@@ -1,0 +1,1 @@
+Welcome to Coupon Hub, ${firstName}!
