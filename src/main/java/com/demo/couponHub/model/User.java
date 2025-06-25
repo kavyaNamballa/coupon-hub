@@ -1,5 +1,7 @@
 package com.demo.couponHub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,13 +9,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,8 +35,16 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Transient
-    private String confirmPassword;
+    @Column(name = "mobile_number")
+    private String mobileNumber;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "uploadedUser")
+    private Set<Coupon> uploadedCoupons = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usedUser")
+    private Set<Coupon> usedCoupons = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -40,7 +53,12 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getEmail();
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override

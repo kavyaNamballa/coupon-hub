@@ -6,6 +6,7 @@ CREATE TABLE `users`
     `last_name`                   VARCHAR(255),
     `email`                       VARCHAR(255) NOT NULL,
     `password`                    VARCHAR(255),
+    `mobile_number`               VARCHAR(20),
     `created_by_id`               BIGINT(20) DEFAULT NULL,
     `updated_by_id`               BIGINT(20) DEFAULT NULL,
     `created_date`                timestamp  DEFAULT CURRENT_TIMESTAMP,
