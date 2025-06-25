@@ -16,4 +16,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long>, JpaSpecif
     List<String> findAllBrandNames();
 
     int countByUsedUserIdAndUpdatedAtBetween(Long userId, Date startDate, Date endDate);
+
+    Long countByUsedUserId(Long userId);
 }

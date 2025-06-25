@@ -11,15 +11,12 @@ import com.demo.couponHub.repository.CouponRepository;
 import com.demo.couponHub.specification.CouponSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
-import org.mapstruct.ap.internal.util.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,7 +31,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponMapper couponMapper;
 
-    public PaginatedResponse<Coupon> findCouponsByCriteria(CouponSearchCriteria criteria, int page, int size, String sortBy, String sortDirection) {
+    public PaginatedResponse<Coupon> findCouponsByCriteria(CouponSearchCriteria criteria,boolean hide, int page, int size, String sortBy, String sortDirection) {
         Specification<Coupon> spec = buildSpecification(criteria);
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection != null ? sortDirection : "DESC"),
@@ -42,7 +39,9 @@ public class CouponService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Coupon> couponPage = couponRepository.findAll(spec, pageable);
-        hideCouponCode(couponPage.getContent());
+        if(hide) {
+            hideCouponCode(couponPage.getContent());
+        }
 
         return PaginatedResponse.of(
                 couponPage.getContent(),
@@ -62,6 +61,7 @@ public class CouponService {
         Coupon coupon = couponMapper.mapRequest(request);
         coupon.setCreatedAt(new Date());
         coupon.setUpdatedAt(new Date());
+        coupon.setUploadedUserId(userId);
         return couponRepository.save(coupon);
     }
 
@@ -70,7 +70,7 @@ public class CouponService {
         criteria.setUploadedUserId(userId);
         criteria.setOnlyActive(false);
         criteria.setOnlyUnused(false);
-        return findCouponsByCriteria(criteria, page, size, sortBy, sortDirection);
+        return findCouponsByCriteria(criteria, false, page, size, sortBy, sortDirection);
     }
 
     private Specification<Coupon> buildSpecification(CouponSearchCriteria criteria) {
@@ -145,7 +145,7 @@ public class CouponService {
         return spec;
     }
 
-    public String useCoupon(Long couponId, Long userId) throws CouponException {
+    public Coupon useCoupon(Long couponId, Long userId) throws CouponException {
         try {
             Optional<Coupon> couponOpt = couponRepository.findById(couponId);
             if (couponOpt.isEmpty()) {
@@ -179,7 +179,7 @@ public class CouponService {
             couponRepository.save(coupon);
 
             log.info("Coupon {} used by user {} (daily usage: {})", couponId, userId, dailyUsageCount + 1);
-            return Messages.SUCCESS;
+            return coupon;
         } catch (Exception e) {
             log.error("Error using coupon: {}", e.getMessage(), e);
             throw new CouponException(e.getMessage());
@@ -205,6 +205,15 @@ public class CouponService {
     public int getRemainingDailyUsage(Long userId) {
         int usedToday = getDailyUsageCount(userId);
         return Math.max(0, 10 - usedToday);
+    }
+
+    public Long getUsageCount(Long userId) {
+        try{
+            return couponRepository.countByUsedUserId(userId);
+        } catch (Exception e) {
+            log.error("Error getting usage count for user {}: {}", userId, e.getMessage(), e);
+            return 0L;
+        }
     }
 
     public String revealCouponCode(Long couponId, Long userId) {

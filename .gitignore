@@ -1,0 +1,15 @@
+.gradle
+build/**
+bin/**
+.idea/**
+*.iml
+.DS_Store
+logs/**
+out
+.settings/*
+.factorypath
+.classpath
+.project
+.apt_generated/*
+*.jar
+/htmlReport/

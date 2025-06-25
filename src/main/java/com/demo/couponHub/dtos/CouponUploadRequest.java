@@ -14,4 +14,6 @@ public class CouponUploadRequest {
     private Integer minPurchaseAmount;
     private String brandName;
     private Date expiryDate;
+    private Long usedUserId;
+    private Long uploadedUserId;
 }

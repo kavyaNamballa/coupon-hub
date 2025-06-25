@@ -1,5 +1,6 @@
 package com.demo.couponHub.controller;
 
+import com.demo.couponHub.dtos.CouponDTO;
 import com.demo.couponHub.dtos.CouponSearchCriteria;
 import com.demo.couponHub.dtos.CouponUploadRequest;
 import com.demo.couponHub.dtos.PaginatedResponse;
@@ -16,7 +17,6 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/coupons")
-@CrossOrigin(origins = "http://dev.couponhub.com:9999")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CouponController {
     private final CouponService couponService;
@@ -56,7 +56,7 @@ public class CouponController {
         criteria.setOnlyActive(onlyActive);
         criteria.setOnlyUnused(onlyUnused);
 
-        return couponService.findCouponsByCriteria(criteria, page, size, sortBy, sortDirection);
+        return couponService.findCouponsByCriteria(criteria,true, page, size, sortBy, sortDirection);
     }
 
     @PostMapping("/upload")
@@ -91,11 +91,11 @@ public class CouponController {
         criteria.setBrandName(brandName);
         criteria.setOnlyActive(true);
         criteria.setOnlyUnused(true);
-        return couponService.findCouponsByCriteria(criteria, page, size, sortBy, sortDirection);
+        return couponService.findCouponsByCriteria(criteria,true, page, size, sortBy, sortDirection);
     }
 
     @PostMapping("/use")
-    public ResponseEntity<String> useCoupon(@RequestParam Long couponId, @RequestParam Long userId) throws CouponException,Exception {
+    public ResponseEntity<Coupon> useCoupon(@RequestParam Long couponId, @RequestParam Long userId) throws CouponException,Exception {
         return ResponseEntity.ok(couponService.useCoupon(couponId, userId));
     }
 
@@ -116,6 +116,16 @@ public class CouponController {
             return ResponseEntity.ok(remainingUsage);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(0);
+        }
+    }
+
+    @GetMapping("/user/{userId}/usedCount")
+    public ResponseEntity<Long> getUsageCount(@PathVariable Long userId) {
+        try {
+            Long count = couponService.getUsageCount(userId);
+            return ResponseEntity.ok(count);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(0L);
         }
     }
 }

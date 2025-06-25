@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
-@CrossOrigin(origins = "http://dev.couponhub.com:9999")
 public class UserController {
 
     private final UserService userService;

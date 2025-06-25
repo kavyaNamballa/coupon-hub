@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/wishlist")
-@CrossOrigin(origins = "http://dev.couponhub.com:9999")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WishlistController {
     private final WishlistService wishlistService;
