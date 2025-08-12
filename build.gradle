@@ -27,7 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
+   //-----------------------
 // https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path
 	implementation("com.jayway.jsonpath:json-path:2.9.0")
 // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
@@ -36,6 +36,9 @@ dependencies {
 	implementation("io.burt:jmespath:0.6.0")
 	implementation 'com.github.jsurfer:jsurfer-jackson:1.6.5'
 	implementation 'io.burt:jmespath-jackson:0.6.0'
+	implementation("com.ibm.jsonata4java:JSONata4Java:2.5.5")
+
+	//-----------------------------
 
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
@@ -57,6 +60,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'org.mapstruct:mapstruct:1.4.2.Final'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.h2database:h2'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'

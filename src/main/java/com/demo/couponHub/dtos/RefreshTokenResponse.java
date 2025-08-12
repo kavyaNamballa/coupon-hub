@@ -1,18 +1,15 @@
 package com.demo.couponHub.dtos;
 
-import com.demo.couponHub.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class LoginResponse {
+public class RefreshTokenResponse {
 
     private String accessToken;
-    private User user;
 
-    public LoginResponse(String accessToken, User user) {
+    public RefreshTokenResponse(String accessToken) {
         this.accessToken = accessToken;
-        this.user = user;
     }
 }
